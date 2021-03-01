@@ -131,7 +131,7 @@ namespace MovieNight
                 }
                 else
                 {
-                    sqlCommand.CommandText = "SELECT * FROM Movies WHERE LastName like @search";
+                    sqlCommand.CommandText = "SELECT * FROM Actors WHERE LastName like @search";
                     SqlParameter sp = new SqlParameter();
                     sp.ParameterName = "@search";
                     sp.Value = nameSearch;

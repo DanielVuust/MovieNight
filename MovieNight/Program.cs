@@ -89,7 +89,7 @@ namespace MovieNight
 
             StringBuilder actorSearchStringBuilder = new StringBuilder();
 
-            Console.WriteLine("Id \t Title \t\t Realse Year \t Genre");
+            Console.WriteLine("Id \t Name");
             foreach (Actor actor in actorSearchList)
             {
                 actorSearchStringBuilder.Append($"{actor.id} \t {actor.name} \n");
