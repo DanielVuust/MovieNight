@@ -15,12 +15,16 @@ namespace MovieNight
         public int releaseYear { get { return _releaseYear; } set { _releaseYear = value; } }
         public string genre { get { return _genre; } set { _genre = value; } }
 
-        public Movie(int id, string title, int releaseYear, string genre)
+        public Movie (string title, int releaseYear, string genre)
         {
-            _id = id;
             _title = title;
             _releaseYear = releaseYear;
             _genre = genre; 
+        }
+        public Movie(int id, string title, int releaseYear, string genre)
+            :this(title, releaseYear, genre)
+        {
+            _id = id;
         }
     }
 }

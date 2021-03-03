@@ -146,14 +146,55 @@ namespace MovieNight
                 while (rdr.Read())
                 {
                     int id = (int)rdr["AID"];
-                    string name = (string)rdr["firstName"] + " " + (string)rdr["lastName"];
+                    string firstname = (string)rdr["firstName"];
+                    string lastname = (string)rdr["lastName"];
                     //Makes a new Actor object with their name
-                    Actor actor = new Actor(id, name);
+                    Actor actor = new Actor(id, firstname, lastname);
                     //Ads the new Movie object to the list
                     actorList.Add(actor);
                 }
             }
             return actorList;
+        }
+        public static Actor InsertActor(Actor a)
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                int newId;
+                connection.Open();
+
+                SqlCommand sqlCommand = new SqlCommand() { Connection = connection, CommandText = 
+                    "INSERT INTO Actors (FirstName, LastName) OUTPUT INSERTED.AID VALUES (@firstname, @lastname)" };
+                sqlCommand.Parameters.Add(new SqlParameter("@firstname", a.firstname));
+                sqlCommand.Parameters.Add(new SqlParameter("@lastname", a.lastname));
+
+                newId = (Int32)sqlCommand.ExecuteScalar();
+                a.id = newId;
+            }
+            return a;
+
+        }
+        public static Movie InsertMovie(Movie m)
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                int newId;
+                connection.Open();
+
+                SqlCommand sqlCommand = new SqlCommand()
+                {
+                    Connection = connection,
+                    CommandText =
+                    "INSERT INTO Movies (Title, Year, Genre) OUTPUT INSERTED.MID VALUES (@title, @releaseYear, @genre)"
+                };
+                sqlCommand.Parameters.Add(new SqlParameter("@title", m.title));
+                sqlCommand.Parameters.Add(new SqlParameter("@releaseYear", m.releaseYear));
+                sqlCommand.Parameters.Add(new SqlParameter("@genre", m.genre));
+
+                newId = (Int32)sqlCommand.ExecuteScalar();
+                m.id = newId;
+            }
+            return m;
         }
     }
 }
