@@ -14,6 +14,10 @@ namespace MovieNight
         {
             return OutputActorsFromList(DalManager.GetActorsFromLastname(nameSearch));
         }
+        public static StringBuilder OutputAllGenres()
+        {
+            return DalManager.GetAllGenre();
+        }
         public static StringBuilder OutputMoviesFromList(List<Movie> movieList)
         {
             //Makes a stringBuilder and defines what it starts with.
@@ -45,10 +49,7 @@ namespace MovieNight
             //Returns one long stringBuilder so it only need to be outputted to the console.
             return stringBuilder;
         }
-        
 
-         
-        
         //If genreSearch is not definded then it is set to null 
         public static List<Movie> GetMoviesFromGenre(string genreSearch = null)
         {
@@ -62,5 +63,10 @@ namespace MovieNight
         {
             return DalManager.InsertMovie(m);
         }
+        public static void AddGenre(string genreName)
+        {
+            
+        }
+        
     }
 }

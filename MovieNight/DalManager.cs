@@ -80,19 +80,26 @@ namespace MovieNight
         public static List<Movie> GetMoviesFromGenre(string genreSearch)
         
         {
+            
             List<Movie> movieList = new List<Movie>();
-            movieList = GetMovies(genreSearch);
-            foreach (Movie str in movieList)
-            {
+            movieList = GetAllMoviesAndGenre(genreSearch);
+            List<Movie> newMovieList = new List<Movie>(movieList);
 
-                if (!str.genre.Contains(genreSearch))
+            //The genreSearch is set to lower so its not casesensitive what the user types.
+            genreSearch = genreSearch.ToLower();
+            //Foreach Movie object in the movieList this runs once.
+            foreach (var movie in movieList)
+            {
+                //The whole list is here change to lower case.
+                movie.genre = movie.genre.ConvertAll(p => p.ToLower());
+                //If the List<string> dose not contain the genreSearch then its deleted of the new List<string>.
+                if (!movie.genre.Contains(genreSearch))
                 {
-                    movieList.Remove(str);
+                    newMovieList.Remove(movie);
                 }
-                
             }
-            //Returns the List 
-            return movieList;
+            //Returns the newMovieList.
+            return newMovieList;
         }
         public static List<Actor> GetActorsFromLastname(string nameSearch)
         {
@@ -173,10 +180,21 @@ namespace MovieNight
 
                 newId = (Int32)sqlCommand.ExecuteScalar();
                 m.id = newId;
+                foreach (string srr in m.genre)
+                {
+                    SqlCommand sqlCommand1 = new SqlCommand()
+                    {
+                        Connection = connection,
+                        CommandText = $"INSERT INTO MovieGenre (MId, GId) VALUES (@id, (SELECT GId FROM Genre WHERE GenreName = '@genreName'))"
+                    };
+                    sqlCommand1.Parameters.Add(new SqlParameter("@id", newId));
+                    sqlCommand1.Parameters.Add(new SqlParameter("@genreName", srr));
+                    sqlCommand1.ExecuteNonQuery();
+                }
             }
             return m;
         }
-        private static List<Movie> GetMovies(string search = null)
+        private static List<Movie> GetAllMoviesAndGenre(string search = null)
         {
             //Makes a new List 
             List<Movie> movieList = new List<Movie>();
@@ -187,10 +205,8 @@ namespace MovieNight
                 //Makes a SqlCommand that is connected to the local database.
                 SqlCommand sqlCommand = new SqlCommand() { Connection = connection };
 
-                string query = "SELECT * FROM Movies";
-
                 //Adds the query/CommandText to the SqlCommand.
-                sqlCommand.CommandText = query + " JOIN MovieGenre ON Movies.MId = MovieGenre.MId JOIN Genre ON MovieGenre.GId = Genre.GId";
+                sqlCommand.CommandText = "SELECT * FROM Movies JOIN MovieGenre ON Movies.MId = MovieGenre.MId JOIN Genre ON MovieGenre.GId = Genre.GId";
                 
                 
 
@@ -223,6 +239,21 @@ namespace MovieNight
             }
             //Returns the List 
             return movieList;
+        }
+        public static StringBuilder GetAllGenre()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand() { Connection = connection, CommandText = "SELECT GenreName From Genre" };
+                SqlDataReader rdr = sqlCommand.ExecuteReader();
+                while (rdr.Read())
+                {
+                    stringBuilder.Append(rdr["GenreName"] + " ");
+                }
+            }
+            return stringBuilder;
         }
     }
 }

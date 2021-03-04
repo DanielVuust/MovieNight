@@ -44,7 +44,7 @@ namespace MovieNight
                                 program.AddMovie();
                                 break;
                             case "5":
-
+                                program.EditMovie();
                                 break;
                             case "6":
 
@@ -62,20 +62,33 @@ namespace MovieNight
                                 break;
                             case "2":
                                 Console.Clear();
-                                //Not working!!!!
                                 program.ActorSearch();
                                 break;
                             case "3":
                                 Console.Clear();
-
+                                program.AddActor();
                                 break;
                             case "4":
                                 Console.Clear();
-
+                                program.EditActor();
                                 break;
                             case "5":
                                 Console.Clear();
 
+                                break;
+                        }
+                        break;
+                    case "3":
+                        Console.WriteLine(" 1. Vis all genre 2. ");
+                        switch (Console.ReadLine())
+                        {
+                            case "1":
+                                Console.Clear();
+                                Console.WriteLine(MovieManager.OutputAllGenres());
+                                break;
+                            case "2":
+                                Console.Clear();
+                                program.AddGenre();
                                 break;
                         }
                         break;
@@ -105,6 +118,8 @@ namespace MovieNight
         }
         private void GenreSearch()
         {
+            Console.WriteLine("Lige nu findes der de her genrer");
+            Console.WriteLine(MovieManager.OutputAllGenres());
             Console.WriteLine("Skriv hvilken genre vil du søge efter?");
             
             string search = Console.ReadLine();
@@ -127,15 +142,56 @@ namespace MovieNight
         {
             string title;
             int releaseYear;
-            string genre;
+            List<string> genreList = new List<string>();
             Console.WriteLine("Skriv navnet på den film du vil tilføje");
             title = Console.ReadLine();
             Console.WriteLine("Skriv året filmen blev udgivet");
             releaseYear = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Skriv hvilken genre filmen er");
-            genre = Console.ReadLine();
-            //Movie movie = new Movie(title, releaseYear);
-            //MovieManager.AddMovie(movie);
+            Console.WriteLine(MovieManager.OutputAllGenres());
+            while (true)
+            {
+                Console.WriteLine("Skriv hvilken en af de her genrer filmen er. Skriv 0 når du er færdig med at tilføje genrer");
+                string genre = Console.ReadLine();
+                if (genre == "0")
+                {
+                    break;
+                }
+                else
+                {
+                    genreList.Add(genre);
+                }
+            }
+            Movie movie = new Movie(genreList, title, releaseYear);
+            MovieManager.AddMovie(movie);
+        }
+        private void AddGenre()
+        {
+            Console.WriteLine("Skriv den genre du vil tilføje");
+            MovieManager.AddGenre(Console.ReadLine());
+        }
+        private void EditMovie()
+        {
+
+        }
+        private void EditActor()
+        {
+
+        }
+        private void EditGenre()
+        {
+
+        }
+        private void RemoveMovie()
+        {
+
+        }
+        private void RemoveActor()
+        {
+
+        }
+        private void RemoveGenre()
+        {
+
         }
     }
 }
