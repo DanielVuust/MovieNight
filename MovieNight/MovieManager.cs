@@ -17,12 +17,17 @@ namespace MovieNight
         public static StringBuilder OutputMoviesFromList(List<Movie> movieList)
         {
             //Makes a stringBuilder and defines what it starts with.
-            StringBuilder stringBuilder = new StringBuilder("Id \t Title \t\t Realse Year \t Genre \n");
+            StringBuilder stringBuilder = new StringBuilder("Id \t Title \t\t Realse Year \t Genre\n");
 
             //Runs through all the item in the list and puts it in the stringBuilder.
             foreach (Movie movie in movieList)
             {
-                stringBuilder.Append($"{movie.id} \t {movie.title} \t {movie.releaseYear} \t\t {movie.genre} \n");
+                stringBuilder.Append($"{movie.id} \t {movie.title} \t {movie.releaseYear}\t\t");
+                foreach (string genre1 in movie.genre)
+                {
+                    stringBuilder.Append($" {genre1}");
+                }
+                stringBuilder.Append("\n");
             }
             //Returns one long stringBuilder so it only need to be outputted to the console.
             return stringBuilder;

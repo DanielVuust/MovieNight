@@ -11,6 +11,7 @@ namespace MovieNight
         {
             //Here i call the function that will return the List of movies in the database.
             Console.WriteLine(MovieManager.OutputMoviesFromDB());
+            Console.WriteLine("yo");
 
             Console.WriteLine(MovieManager.OutputActorsFromDB());
 
@@ -27,15 +28,19 @@ namespace MovieNight
                         switch (Console.ReadLine())
                         {
                             case "1":
-                                MovieManager.OutputActorsFromDB();
+                                Console.Clear();
+                                Console.WriteLine(MovieManager.OutputMoviesFromDB());
                                 break;
                             case "2":
+                                Console.Clear();
                                 program.MovieSearch();
                                 break;
                             case "3":
+                                Console.Clear();
                                 program.GenreSearch();
                                 break;
                             case "4":
+                                Console.Clear();
                                 program.AddMovie();
                                 break;
                             case "5":
@@ -52,18 +57,24 @@ namespace MovieNight
                         switch (Console.ReadLine())
                         {
                             case "1":
+                                Console.Clear();
                                 Console.WriteLine(MovieManager.OutputActorsFromDB());
                                 break;
                             case "2":
+                                Console.Clear();
+                                //Not working!!!!
                                 program.ActorSearch();
                                 break;
                             case "3":
+                                Console.Clear();
 
                                 break;
                             case "4":
+                                Console.Clear();
 
                                 break;
                             case "5":
+                                Console.Clear();
 
                                 break;
                         }
@@ -95,7 +106,7 @@ namespace MovieNight
         private void GenreSearch()
         {
             Console.WriteLine("Skriv hvilken genre vil du søge efter?");
-            //Here the user decides what to search for.
+            
             string search = Console.ReadLine();
             //Gets the movie List<Movie> from the search and makes them to a string builder in the OutputMoviesFromList.
             Console.WriteLine(MovieManager.OutputMoviesFromList(MovieManager.GetMoviesFromGenre(search)));
@@ -123,8 +134,8 @@ namespace MovieNight
             releaseYear = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Skriv hvilken genre filmen er");
             genre = Console.ReadLine();
-            Movie movie = new Movie(title, releaseYear, genre);
-            MovieManager.AddMovie(movie);
+            //Movie movie = new Movie(title, releaseYear);
+            //MovieManager.AddMovie(movie);
         }
     }
 }
