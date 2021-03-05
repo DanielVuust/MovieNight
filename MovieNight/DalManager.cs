@@ -194,6 +194,16 @@ namespace MovieNight
             }
             return m;
         }
+        public static void InsertGenre(string genreName)
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand() { Connection = connection, CommandText = $"INSERT INTO Genre (GenreName) VALUES (@genreName)" };
+                sqlCommand.Parameters.Add(new SqlParameter("@genreName", genreName));
+                sqlCommand.ExecuteNonQuery();
+            }
+        }
         private static List<Movie> GetAllMoviesAndGenre(string search = null)
         {
             //Makes a new List 
@@ -240,9 +250,10 @@ namespace MovieNight
             //Returns the List 
             return movieList;
         }
-        public static StringBuilder GetAllGenre()
+        public static List<string> GetAllGenre()
         {
-            StringBuilder stringBuilder = new StringBuilder();
+
+            List<string> genreList = new List<string>();
             using (SqlConnection connection = new SqlConnection(strConnection))
             {
                 connection.Open();
@@ -250,10 +261,75 @@ namespace MovieNight
                 SqlDataReader rdr = sqlCommand.ExecuteReader();
                 while (rdr.Read())
                 {
-                    stringBuilder.Append(rdr["GenreName"] + " ");
+                    string genre = (string)rdr["GenreName"];
+                    genreList.Add(genre);
                 }
             }
-            return stringBuilder;
+            return genreList;
+        }
+        public static void RemoveMovie(int id)
+        {
+            using (SqlConnection connection  = new SqlConnection(strConnection))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand() { Connection = connection };
+                sqlCommand.CommandText = $"DELETE FROM MovieGenre WHERE MId = @id";
+                SqlParameter parameter = new SqlParameter();
+                parameter.ParameterName = "@id";
+                parameter.Value = id;
+                sqlCommand.Parameters.Add(parameter);
+
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.CommandText = $"DELETE FROM Movies WHERE MId = @id";
+                sqlCommand.ExecuteNonQuery();
+            }
+        }
+        public static void RemoveActor(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand() { Connection = connection };
+                sqlCommand.CommandText = "DELETE FROM Actors WHERE AId = @id";
+                SqlParameter parameter = new SqlParameter();
+                parameter.ParameterName = "@id";
+                parameter.Value = id;
+                sqlCommand.Parameters.Add(parameter);
+                sqlCommand.ExecuteNonQuery();
+                connection.Close();
+            }
+
+        }
+        public static void RemoveGenre(string genreName)
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand() { Connection = connection };
+                sqlCommand.CommandText = "SELECT GId FROM Genre WHERE GenreName = @genreName";
+                SqlParameter parameter = new SqlParameter() { ParameterName = "@genreName", Value = genreName };
+                sqlCommand.Parameters.Add(parameter);
+                SqlDataReader rdr = sqlCommand.ExecuteReader();
+
+                List<int> idList = new List<int>();
+                while (rdr.Read())
+                {
+                    int id =(int)rdr["GId"];
+                    idList.Add(id);
+                }
+                rdr.Close();
+                foreach (int id in idList)
+                {
+                    SqlCommand sqlCommand1 = new SqlCommand() { Connection = connection };
+                    sqlCommand1.CommandText = "DELETE FROM MovieGenre WHERE GId = @id";
+                    SqlParameter parameter1 = new SqlParameter() { ParameterName = "@id", Value = id };
+                    sqlCommand1.Parameters.Add(parameter1);
+                    sqlCommand1.ExecuteNonQuery();
+                    sqlCommand1.CommandText = "DELETE FROM Genre WHERE Gid = @id";
+                    sqlCommand1.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

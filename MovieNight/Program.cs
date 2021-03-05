@@ -10,16 +10,16 @@ namespace MovieNight
         static void Main(string[] args) 
         {
             //Here i call the function that will return the List of movies in the database.
-            Console.WriteLine(MovieManager.OutputMoviesFromDB());
+            Console.WriteLine(MovieManager.OutputMoviesFromTitle());
             Console.WriteLine("yo");
 
-            Console.WriteLine(MovieManager.OutputActorsFromDB());
+            Console.WriteLine(MovieManager.OutputActorsFromLastname());
 
             Program program = new Program();
             //I use a while loop because the user should be able to make multiple searches.
             while (true)
             {
-                Console.WriteLine("Vil du søge efter en skuespiller eller en film? \n 1. Film \n 2. Skuespiller");
+                Console.WriteLine("Vil du søge efter en skuespiller eller en film? \n 1. Film \n 2. Skuespiller \n 3. Genre");
                 //A switch statemant so i can call the function that is related the what the user wants.
                 switch (Console.ReadLine())
                 {
@@ -29,7 +29,7 @@ namespace MovieNight
                         {
                             case "1":
                                 Console.Clear();
-                                Console.WriteLine(MovieManager.OutputMoviesFromDB());
+                                program.ShowAllMovies();
                                 break;
                             case "2":
                                 Console.Clear();
@@ -44,10 +44,12 @@ namespace MovieNight
                                 program.AddMovie();
                                 break;
                             case "5":
+                                Console.Clear();
                                 program.EditMovie();
                                 break;
                             case "6":
-
+                                Console.Clear();
+                                program.RemoveMovie();
                                 break;
                         }
                         break;
@@ -58,7 +60,7 @@ namespace MovieNight
                         {
                             case "1":
                                 Console.Clear();
-                                Console.WriteLine(MovieManager.OutputActorsFromDB());
+                                program.ShowAllActors();
                                 break;
                             case "2":
                                 Console.Clear();
@@ -74,21 +76,29 @@ namespace MovieNight
                                 break;
                             case "5":
                                 Console.Clear();
-
+                                program.RemoveActor();
                                 break;
                         }
                         break;
                     case "3":
-                        Console.WriteLine(" 1. Vis all genre 2. ");
+                        Console.WriteLine(" 1. Vis all genre \n 2. Tilføj En genre \n 3. Updater genre data \n 4. Slet genre");
                         switch (Console.ReadLine())
                         {
                             case "1":
                                 Console.Clear();
-                                Console.WriteLine(MovieManager.OutputAllGenres());
+                                program.ShowAlllGenres();
                                 break;
                             case "2":
                                 Console.Clear();
                                 program.AddGenre();
+                                break;
+                            case "3":
+                                Console.Clear();
+                                program.EditGenre();
+                                break;
+                            case "4":
+                                Console.Clear();
+                                program.RemoveGenre();
                                 break;
                         }
                         break;
@@ -99,6 +109,19 @@ namespace MovieNight
                 }
             }
             
+
+        }
+        private void ShowAllMovies()
+        {
+            Console.WriteLine(MovieManager.OutputMoviesFromTitle()); 
+        }
+        private void ShowAllActors()
+        {
+            Console.WriteLine(MovieManager.OutputActorsFromLastname());
+        }
+        private void ShowAlllGenres()
+        {
+            Console.WriteLine(MovieManager.OutputGenreFromGenre());
         }
         private void MovieSearch()
         {
@@ -106,7 +129,7 @@ namespace MovieNight
             //Here the user decides what to search for.
             string search = Console.ReadLine();
             //Calls a function and saves it as a movieSearchList List
-            Console.WriteLine(MovieManager.OutputMoviesFromDB(search));
+            Console.WriteLine(MovieManager.OutputMoviesFromTitle(search));
         }
         private void ActorSearch()
         {
@@ -114,17 +137,17 @@ namespace MovieNight
             //Here the user decides what to search for.
             string search = Console.ReadLine();
             //Calls a function and saves it as a actorSearchList List
-            Console.WriteLine(MovieManager.OutputActorsFromDB(search));
+            Console.WriteLine(MovieManager.OutputActorsFromLastname(search));
         }
         private void GenreSearch()
         {
             Console.WriteLine("Lige nu findes der de her genrer");
-            Console.WriteLine(MovieManager.OutputAllGenres());
+            Console.WriteLine(MovieManager.OutputGenreFromGenre());
             Console.WriteLine("Skriv hvilken genre vil du søge efter?");
             
             string search = Console.ReadLine();
             //Gets the movie List<Movie> from the search and makes them to a string builder in the OutputMoviesFromList.
-            Console.WriteLine(MovieManager.OutputMoviesFromList(MovieManager.GetMoviesFromGenre(search)));
+            Console.WriteLine(MovieManager.OutputMoviesFromGenre(search));
         }
         private void AddActor()
         {
@@ -136,7 +159,7 @@ namespace MovieNight
             lastname = Console.ReadLine();
             Actor actor = new Actor(firstname, lastname);
             MovieManager.AddActor(actor);
-            Console.WriteLine(MovieManager.OutputActorsFromDB());
+            Console.WriteLine(MovieManager.OutputActorsFromLastname());
         }
         private void AddMovie()
         {
@@ -147,7 +170,7 @@ namespace MovieNight
             title = Console.ReadLine();
             Console.WriteLine("Skriv året filmen blev udgivet");
             releaseYear = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine(MovieManager.OutputAllGenres());
+            Console.WriteLine(MovieManager.OutputGenreFromGenre());
             while (true)
             {
                 Console.WriteLine("Skriv hvilken en af de her genrer filmen er. Skriv 0 når du er færdig med at tilføje genrer");
@@ -171,7 +194,8 @@ namespace MovieNight
         }
         private void EditMovie()
         {
-
+            Console.WriteLine(MovieManager.OutputMoviesFromTitle());
+            Console.WriteLine("Skriv id'et på den film du vil ændre på");
         }
         private void EditActor()
         {
@@ -183,15 +207,31 @@ namespace MovieNight
         }
         private void RemoveMovie()
         {
-
+            Console.WriteLine(MovieManager.OutputMoviesFromTitle());
+            Console.WriteLine("Skriv id'et på den film du vil fjerne");
+            if (MovieManager.RemoveMovie(Console.ReadLine()))
+                Console.WriteLine("Filmen er nu blevet fjernet");
+            else
+                Console.WriteLine("Filmen med den indtastede id kunne ikke fjernes");
+            
         }
         private void RemoveActor()
         {
-
+            Console.WriteLine(MovieManager.OutputActorsFromLastname());
+            Console.WriteLine("Skriv id'et på den skuespillder du vil slette");
+            if (MovieManager.RemoveActor(Console.ReadLine()))
+                Console.WriteLine("Skuespilleren er nu blevet fjernet");
+            else
+                Console.WriteLine("Skuespilleren med den indtastede id kunne ikke fjernes");
         }
         private void RemoveGenre()
         {
-
+            Console.WriteLine(MovieManager.OutputGenreFromGenre());
+            Console.WriteLine("yo");
+            if (MovieManager.RemoveGenre(Console.ReadLine()))
+                Console.WriteLine("success");
+            else
+                Console.WriteLine("fail");
         }
     }
 }

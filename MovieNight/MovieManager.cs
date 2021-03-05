@@ -1,24 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace MovieNight
 {
     static class MovieManager
     {
+
         //If titleSearch is not definded then it is set to null
-        public static StringBuilder OutputMoviesFromDB(string titleSearch = null)
+        public static StringBuilder OutputMoviesFromTitle(string titleSearch = null)
         {
-            return OutputMoviesFromList(DalManager.GetMoviesFromTitle(titleSearch));
+            return MoviesListToStrinBuilder(DalManager.GetMoviesFromTitle(titleSearch));
         }
-        public static StringBuilder OutputActorsFromDB(string nameSearch = null)
+        public static StringBuilder OutputActorsFromLastname(string nameSearch = null)
         {
-            return OutputActorsFromList(DalManager.GetActorsFromLastname(nameSearch));
+            return ActorListToStringBuilder(DalManager.GetActorsFromLastname(nameSearch));
         }
-        public static StringBuilder OutputAllGenres()
+        public static StringBuilder OutputMoviesFromGenre(string genreSearch = null)
         {
-            return DalManager.GetAllGenre();
+            return MoviesListToStrinBuilder(DalManager.GetMoviesFromGenre(genreSearch));
         }
-        public static StringBuilder OutputMoviesFromList(List<Movie> movieList)
+        public static StringBuilder OutputGenreFromGenre()
+        {
+            return GenreListToStringBuilder(DalManager.GetAllGenre());
+        }
+
+        //Makes a list to a StringBuilder.
+        private static StringBuilder MoviesListToStrinBuilder(List<Movie> movieList)
         {
             //Makes a stringBuilder and defines what it starts with.
             StringBuilder stringBuilder = new StringBuilder("Id \t Title \t\t Realse Year \t Genre\n");
@@ -36,7 +44,7 @@ namespace MovieNight
             //Returns one long stringBuilder so it only need to be outputted to the console.
             return stringBuilder;
         }
-        public static StringBuilder OutputActorsFromList(List<Actor> actorList)
+        private static StringBuilder ActorListToStringBuilder(List<Actor> actorList)
         {
             //Makes a stringBuilder and defines what it starts with.
             StringBuilder stringBuilder = new StringBuilder("Id \t Firstname \t Lastname \n");
@@ -49,12 +57,17 @@ namespace MovieNight
             //Returns one long stringBuilder so it only need to be outputted to the console.
             return stringBuilder;
         }
-
-        //If genreSearch is not definded then it is set to null 
-        public static List<Movie> GetMoviesFromGenre(string genreSearch = null)
+        private static StringBuilder GenreListToStringBuilder(List<string> genreList)
         {
-            return DalManager.GetMoviesFromGenre(genreSearch);
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (string genre in genreList)
+            {
+                stringBuilder.Append(genre + " ");
+            }
+            return stringBuilder;
         }
+
+        //Add to the db.
         public static Actor AddActor(Actor a)
         {
             return DalManager.InsertActor(a);
@@ -65,8 +78,49 @@ namespace MovieNight
         }
         public static void AddGenre(string genreName)
         {
-            
+            DalManager.InsertGenre(genreName);
         }
-        
-    }
+        //Edit.
+        public static void EditMovie(Movie m, int id)
+        {
+
+        }
+        public static void EditActor(Actor a, int id)
+        {
+
+        }
+        public static void EditGenre(string g, int id)
+        {
+
+        }
+        public static bool RemoveMovie(string id)
+        {
+            if (Int32.TryParse(id, out int intId))
+            {
+                DalManager.RemoveMovie(intId);
+                return true;
+            }
+            else
+                return false;
+        }
+        public static bool RemoveActor(string id)
+        {
+            if (Int32.TryParse(id, out int intId))
+            {
+                DalManager.RemoveActor(intId);
+                return true;
+            }
+            else
+                return false;
+        }
+        public static bool RemoveGenre(string genreName)
+        {
+            DalManager.RemoveGenre(genreName);
+            return true;
+        }
+
+    }   
 }
+
+
+
