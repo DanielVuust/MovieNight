@@ -81,17 +81,17 @@ namespace MovieNight
             DalManager.InsertGenre(genreName);
         }
         //Edit.
-        public static void EditMovie(Movie m, int id)
+        public static void UpdateMovie(Movie m)
         {
-
+            DalManager.UpdateMovie(m);
         }
-        public static void EditActor(Actor a, int id)
+        public static void UpdateActor(Actor a)
         {
-
+            DalManager.UpdateActor(a);
         }
-        public static void EditGenre(string g, int id)
+        public static void UpdateGenre(string oldGenreName, string newGenreName)
         {
-
+            DalManager.UpdateGenre(oldGenreName, newGenreName);
         }
         public static bool RemoveMovie(string id)
         {

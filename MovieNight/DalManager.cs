@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -329,6 +328,70 @@ namespace MovieNight
                     sqlCommand1.CommandText = "DELETE FROM Genre WHERE Gid = @id";
                     sqlCommand1.ExecuteNonQuery();
                 }
+            }
+        }
+        public static void UpdateMovie(Movie m )
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand() { Connection = connection };
+                sqlCommand.CommandText = "UPDATE Movies SET Title = @title, Year = @Year WHERE Movies.MId = @id";
+                sqlCommand.Parameters.Add(new SqlParameter() { ParameterName = "@title", Value = m.title });
+                sqlCommand.Parameters.Add(new SqlParameter() { ParameterName = "@year", Value = m.releaseYear });
+                sqlCommand.Parameters.Add(new SqlParameter() { ParameterName = "@id", Value = m.id });
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.CommandText = "DELETE FROM MovieGenre WHERE MId = @id";
+                sqlCommand.ExecuteNonQuery();
+                foreach (string srr in m.genre)
+                {
+                    SqlCommand sqlCommand1 = new SqlCommand()
+                    {
+                        Connection = connection,
+                        CommandText = $"INSERT INTO MovieGenre (MId, GId) VALUES (@id, (SELECT GId FROM Genre WHERE GenreName = @genreName))"
+                    };
+                    sqlCommand1.Parameters.Add(new SqlParameter("@id", m.id));
+                    sqlCommand1.Parameters.Add(new SqlParameter("@genreName", srr));
+                    sqlCommand1.ExecuteNonQuery();
+                }
+
+            }
+        }
+        public static void UpdateActor(Actor a)
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                connection.Open();
+
+                SqlCommand sqlCommand = new SqlCommand()
+                {
+                    Connection = connection,
+                    CommandText =
+                    "UPDATE Actors SET Firstname = @firstname, Lastname = @lastname WHERE AId = @id"
+                };
+                sqlCommand.Parameters.Add(new SqlParameter("@firstname", a.firstname));
+                sqlCommand.Parameters.Add(new SqlParameter("@lastname", a.lastname));
+                sqlCommand.Parameters.Add(new SqlParameter("@id", a.id));
+                sqlCommand.ExecuteNonQuery();
+            }
+        }
+        public static void UpdateGenre(string oldGenreName, string newGenreName)
+        {
+            using (SqlConnection connection = new SqlConnection(strConnection))
+            {
+                connection.Open();
+
+                SqlCommand sqlCommand = new SqlCommand()
+                {
+                    Connection = connection,
+                    CommandText =
+                    "UPDATE Genre SET GenreName = @newGenreName WHERE GenreName = @oldGenreName"
+                };
+                sqlCommand.Parameters.Add(new SqlParameter("@oldGenreName", oldGenreName));
+                sqlCommand.Parameters.Add(new SqlParameter("@newGenreName", newGenreName));
+                
+                sqlCommand.ExecuteNonQuery();
             }
         }
     }

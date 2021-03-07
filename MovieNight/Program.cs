@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 
-namespace MovieNight 
+namespace MovieNight
 {
     class Program
     {
@@ -45,7 +43,7 @@ namespace MovieNight
                                 break;
                             case "5":
                                 Console.Clear();
-                                program.EditMovie();
+                                program.UpdateMovie();
                                 break;
                             case "6":
                                 Console.Clear();
@@ -72,7 +70,7 @@ namespace MovieNight
                                 break;
                             case "4":
                                 Console.Clear();
-                                program.EditActor();
+                                program.UpdateActor();
                                 break;
                             case "5":
                                 Console.Clear();
@@ -94,7 +92,7 @@ namespace MovieNight
                                 break;
                             case "3":
                                 Console.Clear();
-                                program.EditGenre();
+                                program.UpdateGenre();
                                 break;
                             case "4":
                                 Console.Clear();
@@ -192,18 +190,59 @@ namespace MovieNight
             Console.WriteLine("Skriv den genre du vil tilføje");
             MovieManager.AddGenre(Console.ReadLine());
         }
-        private void EditMovie()
+        private void UpdateMovie()
         {
+            string title;
+            int releaseYear;
+            int id;
+            List<string> genreList = new List<string>();
             Console.WriteLine(MovieManager.OutputMoviesFromTitle());
             Console.WriteLine("Skriv id'et på den film du vil ændre på");
-        }
-        private void EditActor()
-        {
+            id = Convert.ToInt32(Console.ReadLine());
 
+            
+            
+            Console.WriteLine("Skriv hvad det nye navn skal være");
+            title = Console.ReadLine();
+            Console.WriteLine("Skriv året filmen blev udgivet");
+            releaseYear = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine(MovieManager.OutputGenreFromGenre());
+            while (true)
+            {
+                Console.WriteLine("Skriv hvilken en af de her genrer filmen er. Skriv 0 når du er færdig med at tilføje genrer");
+                string genre = Console.ReadLine();
+                if (genre == "0")
+                {
+                    break;
+                }
+                else
+                {
+                    genreList.Add(genre);
+                }
+            }
+            Movie movie = new Movie(id, genreList, title, releaseYear);
+            MovieManager.UpdateMovie(movie);
         }
-        private void EditGenre()
+        private void UpdateActor()
         {
-
+            Console.WriteLine(MovieManager.OutputActorsFromLastname());
+            Console.WriteLine("Skriv id'et på den person du vil ændre dataen på");
+            int id = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Skriv hvad fornavnet skal ændres til ");
+            string firstname = Console.ReadLine();
+            Console.WriteLine("Skriv hvad efternavnet skal ændres til");
+            string lastname = Console.ReadLine();
+            Actor actor = new Actor(id, firstname, lastname);
+            MovieManager.UpdateActor(actor);
+        }
+        private void UpdateGenre()
+        {
+            Console.WriteLine(MovieManager.OutputGenreFromGenre());
+            Console.WriteLine("Skriv den genre du vil ændre på");
+            string genreName = Console.ReadLine();
+            Console.WriteLine("Skriv hvad den skal ændres til");
+            string newGenreName = Console.ReadLine();
+            MovieManager.UpdateGenre(genreName, newGenreName);
         }
         private void RemoveMovie()
         {
@@ -227,11 +266,11 @@ namespace MovieNight
         private void RemoveGenre()
         {
             Console.WriteLine(MovieManager.OutputGenreFromGenre());
-            Console.WriteLine("yo");
+            Console.WriteLine("Skriv den genre du vil fjerne");
             if (MovieManager.RemoveGenre(Console.ReadLine()))
-                Console.WriteLine("success");
+                Console.WriteLine("Den genre er nu blevet slettet");
             else
-                Console.WriteLine("fail");
+                Console.WriteLine("Kunne ikke slette den valgte genre");
         }
     }
 }
